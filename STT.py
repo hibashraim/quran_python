@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from pyarabic import araby
 from pyarabic.araby import strip_tashkeel
 import difflib
+from waitress import serve
 
 API_URL = "https://api-inference.huggingface.co/models/tarteel-ai/whisper-base-ar-quran"
 HEADERS = {"Authorization": "Bearer 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"}
@@ -112,4 +113,4 @@ def hello_world():
     return 'helloworld'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=5000)
