@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from pyarabic import araby
 from pyarabic.araby import strip_tashkeel
 import difflib
-
+from pyarabic.araby import strip_lastharaka
 
 API_URL = "https://api-inference.huggingface.co/models/tarteel-ai/whisper-base-ar-quran"
 HEADERS = {"Authorization": "Bearer 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"}
@@ -22,25 +22,49 @@ def get_different_characters(quran, user):
     count = len(different_chars)
    
     return count, different_chars
+
+from pyarabic import araby
+
+def find_different_tashkeel(word1, word2):
+   
+    different_tashkeel = []
+    # يقارن كل حرف في الكلمتين مع حركته
+    letters1, marks1 = araby.separate(word1)
+    letters2, marks2 = araby.separate(word2)
+    for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
+        
+        if letter1 != letter2 or mark1 != mark2 :
+            different_tashkeel.append(letter1 + mark1)
+    
+    return different_tashkeel
+
 def compare_quran_texts(quranText, userText):
     different_words = []
     different_wordsintashkeel = []
     different_wordsinONeCharacter = []
    
+    q=strip_lastharaka(quranText)
     quranTexttokenize = araby.tokenize(quranText)
     userTexttokenize = araby.tokenize(userText)
 
 
     for quran, user in zip(quranTexttokenize, userTexttokenize):
+
+        
         if not araby.vocalizedlike(quran, user):
             quranwithoutTashkeel = strip_tashkeel(quran)
             userwithoutTashkeel = strip_tashkeel(user)
+
             if araby.vocalizedlike(quranwithoutTashkeel, userwithoutTashkeel):
-                different_wordsintashkeel.append((quran, user))
+                if quran == quranTexttokenize[-1] and user == userTexttokenize[-1]:
+                  different_tashkeel= find_different_tashkeel(strip_lastharaka(quran),strip_lastharaka(user))
+                else:
+                 different_tashkeel= find_different_tashkeel(quran,user) 
+                different_wordsintashkeel.append((quran, user,different_tashkeel))
             else:
                 difference_count, different_chars = get_different_characters(quran, user)
                 if difference_count < 3:
-                    different_wordsinONeCharacter.append((quran, user))
+                    different_wordsinONeCharacter.append((quran, user,different_chars))
                 else:
                     different_words.append((quran, user))
            
@@ -58,14 +82,16 @@ def compare_quran_texts(quranText, userText):
     for word_pair in different_wordsintashkeel:
         different_wordsintashkeel_result.append({
             'quran_word': word_pair[0],
-            'user_word': word_pair[1]
+            'user_word': word_pair[1],
+            'different_wordsintashkeel': word_pair[2]
         })
 
 
     for word_pair in different_wordsinONeCharacter:
         different_wordsinONeCharacter_result.append({
             'quran_word': word_pair[0],
-            'user_word': word_pair[1]
+            'user_word': word_pair[1],
+            'different_chars': word_pair[2]
         })
 
 
@@ -109,7 +135,7 @@ async def process_audio():
        
         quran_text = request.form['quranText']
        
-        comparison_result = compare_quran_texts(result, quran_text)
+        comparison_result = compare_quran_texts(quran_text, result)
    
         return jsonify({'text': comparison_result})
 
@@ -120,10 +146,3 @@ async def process_audio():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
