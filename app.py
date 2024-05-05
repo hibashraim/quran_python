@@ -96,6 +96,7 @@ def compare_quran_texts(quranText, userText):
 
 
     return {
+        'quranText': quranText,
         'different_words': different_words_result,
         'different_wordsintashkeel': different_wordsintashkeel_result,
         'different_wordsinONeCharacter': different_wordsinONeCharacter_result
