@@ -21,7 +21,7 @@ def get_different_characters(quran, user):
     different_chars = [char[2] for char in differ if char[0] != ' ']
     count = len(different_chars)
    
-    return count, different_chars
+    return count, different_chars[0]
 
 from pyarabic import araby
 
