@@ -83,7 +83,7 @@ def compare_quran_texts(quranText, userText):
         different_wordsintashkeel_result.append({
             'quran_word': word_pair[0],
             'user_word': word_pair[1],
-            'different_wordsintashkeel': word_pair[2]
+            'different_charintashkeel': word_pair[2]
         })
 
 
