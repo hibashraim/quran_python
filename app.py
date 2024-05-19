@@ -16,7 +16,7 @@ def find_different_tashkeel(word1, word2):
     count=0
     for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
         if letter1 != letter2 or mark1 != mark2:
-            different_tashkeel.append(letter1 + mark1)
+            different_tashkeel.append(letter1 )
             different_tashkeel.append(count)
         count=count+1     
     return different_tashkeel
