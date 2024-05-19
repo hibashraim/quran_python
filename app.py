@@ -53,7 +53,7 @@ def compare_texts(quran_text, user_text):
                      different_tashkeel=find_different_tashkeel(q_word, u_word)
                 if different_chars:
                    different_wordsinONeCharacter.append((q_word,different_chars)) 
-                if different_tashkeel:       
+                elif different_tashkeel :       
                     different_wordsintashkeel.append((q_word,different_tashkeel))
 
                 flag=True
