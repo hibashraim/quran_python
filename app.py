@@ -59,7 +59,8 @@ def compare_texts(quran_text, user_text):
                 flag=True
                 break
         if(flag==False):
-            different_words.append(q_word)  
+            different_words.append(q_word,u_word)  
+         
     for word_pair in different_words:
         different_words_result.append({
             'quran_word': word_pair[0]
