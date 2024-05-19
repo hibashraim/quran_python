@@ -37,7 +37,7 @@ def compare_texts(quran_text, user_text):
 
     quran_words = quran_text.split()
     user_words = user_text.split()
-    result = []
+   
     different_words_result = []
     different_wordsintashkeel_result = []
     different_wordsinONeCharacter_result= []
@@ -59,11 +59,10 @@ def compare_texts(quran_text, user_text):
                 flag=True
                 break
         if(flag==False):
-            different_words_result.append(q_word)  
+            different_words.append(q_word)  
     for word_pair in different_words:
         different_words_result.append({
-            'quran_word': word_pair[0],
-            'user_word': word_pair[1]
+            'quran_word': word_pair[0]
         })
 
 
