@@ -48,9 +48,21 @@ def find_different_tashkeel(word1, word2):
 def get_different_characters(quran, user):
     word1 = strip_tashkeel(quran)
     word2 = strip_tashkeel(user)
+  
+    different_chars = []
+    min_length = min(len(word1), len(word2))
+    
+    for i in range(min_length):
+        if word1[i] != word2[i]:
+            different_chars.append((i, word1[i], word2[i]))
+    
+    if len(word1) > len(word2):
+        for i in range(min_length, len(word1)):
+            different_chars.append((i, word1[i], ''))
+    elif len(word2) > len(word1):
+        for i in range(min_length, len(word2)):
+            different_chars.append((i, '', word2[i]))
 
-    differ = difflib.ndiff(word1, word2)
-    different_chars = [char[2] for char in differ if char[0] != ' ']
     count = len(different_chars)
     return count, different_chars
 
