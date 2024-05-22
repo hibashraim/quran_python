@@ -45,9 +45,7 @@ def find_different_tashkeel(word1, word2):
 
     return differences
     
-def get_different_characters(quran, user):
-    word1 = strip_tashkeel(quran)
-    word2 = strip_tashkeel(user)
+def get_different_characters(word1, word2):
   
     different_chars = []
     min_length = min(len(word1), len(word2))
