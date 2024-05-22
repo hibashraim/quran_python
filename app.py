@@ -6,7 +6,7 @@ import difflib
 from pyarabic.araby import strip_lastharaka
 from pyarabic.araby import  strip_shadda
 
-API_URL ="https://api-inference.huggingface.co/models/openai/whisper-small"
+API_URL ="https://api-inference.huggingface.co/models/tarteel-ai/whisper-base-ar-quran"
 HEADERS = {"Authorization": "Bearer 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"}
 
 app = Flask(__name__)
@@ -103,8 +103,6 @@ def compare_texts(quran_text, user_text):
                 break
         if not flag:
             different_words.append(q_word)
-    
-            
     for word_pair in different_words:
         different_words_result.append({
             'quran_word': word_pair
