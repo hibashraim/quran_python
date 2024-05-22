@@ -4,17 +4,24 @@ from pyarabic import araby
 from pyarabic.araby import strip_tashkeel
 import difflib
 from pyarabic.araby import strip_lastharaka
+from pyarabic.araby import  strip_shadda
 
-API_URL = "https://api-inference.huggingface.co/models/tarteel-ai/whisper-base-ar-quran"
+API_URL ="https://api-inference.huggingface.co/models/raghadOmar/whisper-base-quran"
 HEADERS = {"Authorization": "Bearer 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"}
 
 app = Flask(__name__)
-def find_different_tashkeel(word1, word2):
+def find_different_tashkeel(word11, word22):
+    word1= strip_shadda(word11)
+    word2= strip_shadda(word22)
+    
+    
+
     different_tashkeel = []
     letters1, marks1 = araby.separate(word1)
     letters2, marks2 = araby.separate(word2)
     count=0
     for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
+    
         if letter1 != letter2 or mark1 != mark2:
             different_tashkeel.append(letter1 )
             different_tashkeel.append(count)
