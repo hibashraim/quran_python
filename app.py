@@ -10,24 +10,41 @@ API_URL ="https://api-inference.huggingface.co/models/raghadOmar/whisper-base-qu
 HEADERS = {"Authorization": "Bearer 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"}
 
 app = Flask(__name__)
-def find_different_tashkeel(word11, word22):
-    word1= strip_shadda(word11)
-    word2= strip_shadda(word22)
+# def find_different_tashkeel(word11, word22):
+#     word1= strip_shadda(word11)
+#     word2= strip_shadda(word22)
     
     
 
-    different_tashkeel = []
-    letters1, marks1 = araby.separate(word1)
-    letters2, marks2 = araby.separate(word2)
-    count=0
-    for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
+#     different_tashkeel = []
+#     letters1, marks1 = araby.separate(word1)
+#     letters2, marks2 = araby.separate(word2)
+#     count=0
+#     for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
     
-        if letter1 != letter2 or mark1 != mark2:
-            different_tashkeel.append(letter1 )
-            different_tashkeel.append(count)
-        count=count+1     
-    return different_tashkeel
+#         if letter1 != letter2 or mark1 != mark2:
+#             different_tashkeel.append(letter1 )
+#             different_tashkeel.append(count)
+#         count=count+1     
+#     return different_tashkeel
 
+def find_different_tashkeel(word1, word2):
+    differences = []
+    min_length = min(len(word1), len(word2))
+    
+    for i in range(min_length):
+        if word1[i] != word2[i]:
+            differences.append((i, word1[i], word2[i]))
+    
+    if len(word1) > len(word2):
+        for i in range(min_length, len(word1)):
+            differences.append((i, word1[i], ''))
+    elif len(word2) > len(word1):
+        for i in range(min_length, len(word2)):
+            differences.append((i, '', word2[i]))
+
+    return differences
+    
 def get_different_characters(quran, user):
     word1 = strip_tashkeel(quran)
     word2 = strip_tashkeel(user)
