@@ -48,23 +48,26 @@ def find_different_tashkeel(word1, word2):
 def get_different_characters(quran, user):
     word1 = strip_tashkeel(quran)
     word2 = strip_tashkeel(user)
-  
-    different_chars = []
-    min_length = min(len(word1), len(word2))
-    
-    for i in range(min_length):
-        if word1[i] != word2[i]:
-            different_chars.append((i, word1[i], word2[i]))
-    
-    if len(word1) > len(word2):
-        for i in range(min_length, len(word1)):
-            different_chars.append((i, word1[i], ''))
-    elif len(word2) > len(word1):
-        for i in range(min_length, len(word2)):
-            different_chars.append((i, '', word2[i]))
 
-    count = len(different_chars)
-    return count, different_chars
+    differ = list(difflib.ndiff(word1, word2))
+    
+    different_chars = []
+    quran_index = 0
+    user_index = 0
+    for char in differ:
+       
+        if char[0] == ' ':  # إذا كان الحرف هو نفسه في النصين
+            quran_index += 1
+            user_index += 1
+        elif char[0] == '-':  # إذا كان الحرف في النص القرآني فقط
+            different_chars.append((quran_index, char[2]))
+            quran_index += 1
+        elif char[0] == '+':  # إذا كان الحرف في النص المستخدم فقط
+            user_index += 1
+    
+    difference_count = len(different_chars)
+    return difference_count, different_chars
+
 
 def compare_texts(quran_text, user_text):
     different_words = []
@@ -78,25 +81,28 @@ def compare_texts(quran_text, user_text):
     different_wordsintashkeel_result = []
     different_wordsinONeCharacter_result= []
     flag=False
-    for q_word in quran_words:
-        flag=False
-        for u_word in user_words:
-            difference_count, different_chars = get_different_characters(q_word, u_word)
-            if difference_count < 3:
-                if q_word == quran_words[-1] and u_word == user_words[-1]:
-                    different_tashkeel= find_different_tashkeel(strip_lastharaka(q_word),strip_lastharaka(u_word))
-                else:
-                     different_tashkeel=find_different_tashkeel(q_word, u_word)
-                if different_chars:
-                   different_wordsinONeCharacter.append((q_word,different_chars)) 
-                elif different_tashkeel :       
-                    different_wordsintashkeel.append((q_word,different_tashkeel))
+    user_words_copy = user_words.copy()
 
-                flag=True
+    for q_word in quran_words:
+        flag = False
+        for u_word in user_words_copy:
+            difference_count, different_chars = get_different_characters(q_word, u_word)
+            print(difference_count, different_chars, q_word, u_word)
+            if difference_count < 3:
+                if q_word == quran_words[-1] and u_word == user_words_copy[-1]:
+                    different_tashkeel = find_different_tashkeel(strip_lastharaka(q_word), strip_lastharaka(u_word))
+                else:
+                    different_tashkeel = find_different_tashkeel(q_word, u_word)
+                if different_chars:
+                    different_wordsinONeCharacter.append((q_word, different_chars))
+                elif different_tashkeel:
+                    different_wordsintashkeel.append((q_word, different_tashkeel))
+                
+                flag = True
+                user_words_copy.remove(u_word)  # إزالة الكلمة التي تمت مقارنتها
                 break
-        if(flag==False):
-            different_words.append(q_word)  
-         
+        if not flag:
+            different_words.append(q_word)
     for word_pair in different_words:
         different_words_result.append({
             'quran_word': word_pair
@@ -167,4 +173,7 @@ async def process_audio():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
 
