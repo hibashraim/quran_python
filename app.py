@@ -94,32 +94,37 @@ def compare_texts(quran_text, user_text):
                 else:
                     different_tashkeel = find_different_tashkeel(q_word, u_word)
                 if different_chars:
-                    different_wordsinONeCharacter.append((q_word, different_chars))
+                    different_wordsinONeCharacter.append((q_word, different_chars,u_word))
                 elif different_tashkeel:
-                    different_wordsintashkeel.append((q_word, different_tashkeel))
+                    different_wordsintashkeel.append((q_word, different_tashkeel,u_word))
                 
                 flag = True
                 user_words_copy.remove(u_word)  # إزالة الكلمة التي تمت مقارنتها
                 break
         if not flag:
-            different_words.append(q_word)
+            different_words.append(q_word,u_word)
     for word_pair in different_words:
         different_words_result.append({
-            'quran_word': word_pair
+            'quran_word': word_pair[0],
+            'user_word':word_pair[1]
         })
 
 
     for word_pair in different_wordsintashkeel:
         different_wordsintashkeel_result.append({
             'quran_word': word_pair[0],
-            'different_charintashkeel': word_pair[1]
+            'different_charintashkeel': word_pair[1],
+            'user_word':word_pair[2]
+
         })
 
 
     for word_pair in different_wordsinONeCharacter:
         different_wordsinONeCharacter_result.append({
             'quran_word': word_pair[0],
-            'different_chars': word_pair[1]
+            'different_chars': word_pair[1],
+            'user_word':word_pair[2]
+
         })
        
 
