@@ -113,8 +113,6 @@ def compare_texts(quran_text, user_text):
         if not flag:
             different_words.append(q_word)
   
-    extraWords.append(user_words_copy)
-
     for word_pair in different_words:
         different_words_result.append({
             'quran_word': word_pair
@@ -138,7 +136,7 @@ def compare_texts(quran_text, user_text):
 
         })
        
-
+    extraWords = [{'user_word': word} for word in user_words_copy]
               
     return {
         'quranText': quran_text,
