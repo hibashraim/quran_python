@@ -6,7 +6,7 @@ import difflib
 from pyarabic.araby import strip_lastharaka
 from pyarabic.araby import  strip_shadda
 
-API_URL ="https://api-inference.huggingface.co/models/tarteel-ai/whisper-base-ar-quran"
+API_URL ="https://api-inference.huggingface.co/models/raghadOmar/whisper-base-quran"
 HEADERS = {"Authorization": "Bearer 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"}
 
 app = Flask(__name__)
