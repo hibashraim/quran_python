@@ -1,32 +1,13 @@
 import aiohttp
 from flask import Flask, request, jsonify
-from pyarabic import araby
 from pyarabic.araby import strip_tashkeel
 import difflib
 from pyarabic.araby import strip_lastharaka
-from pyarabic.araby import  strip_shadda
 
 API_URL ="https://api-inference.huggingface.co/models/raghadOmar/whisper-base-quran"
 HEADERS = {"Authorization": "Bearer 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"}
 
 app = Flask(__name__)
-# def find_different_tashkeel(word11, word22):
-#     word1= strip_shadda(word11)
-#     word2= strip_shadda(word22)
-    
-    
-
-#     different_tashkeel = []
-#     letters1, marks1 = araby.separate(word1)
-#     letters2, marks2 = araby.separate(word2)
-#     count=0
-#     for letter1, mark1, letter2, mark2 in zip(letters1, marks1, letters2, marks2):
-    
-#         if letter1 != letter2 or mark1 != mark2:
-#             different_tashkeel.append(letter1 )
-#             different_tashkeel.append(count)
-#         count=count+1     
-#     return different_tashkeel
 
 def find_different_tashkeel(word1, word2):
     differences = []
@@ -73,6 +54,7 @@ def get_different_characters(quran, user):
 
 
 def compare_texts(quran_text, user_text):
+
     different_words = []
     different_wordsintashkeel = []
     different_wordsinONeCharacter = []
@@ -92,19 +74,30 @@ def compare_texts(quran_text, user_text):
     for q_word in quran_words:
         flag = False
         for u_word in user_words_copy:
+           
+           if q_word == u_word:
+            flag=True
+            user_words_copy.remove(u_word) 
+            break
+           if strip_tashkeel(q_word) == strip_tashkeel(u_word):
+            if q_word == quran_words[-1] and u_word == user_words_copy[-1]:
+                    different_tashkeel = find_different_tashkeel(strip_lastharaka(q_word), strip_lastharaka(u_word))
+            else:
+                    different_tashkeel = find_different_tashkeel(q_word, u_word)
+            different_wordsintashkeel.append((q_word, different_tashkeel,u_word))
+            flag = True
+            user_words_copy.remove(u_word)
+            break
+           
+           else:
             difference_count, different_chars ,different_charsAll= get_different_characters(q_word, u_word)  
             print(difference_count, different_chars, q_word, u_word)
             print(difference_count & abs(len(strip_tashkeel(q_word)) - len(strip_tashkeel(u_word)))<=2)         
             if difference_count < 3 and ( abs(len(strip_tashkeel(q_word)) - len(strip_tashkeel(u_word)))<=2 ) :
                 print('ok')
-                if q_word == quran_words[-1] and u_word == user_words_copy[-1]:
-                    different_tashkeel = find_different_tashkeel(strip_lastharaka(q_word), strip_lastharaka(u_word))
-                else:
-                    different_tashkeel = find_different_tashkeel(q_word, u_word)
+
                 if different_charsAll or different_chars:
-                    different_wordsinONeCharacter.append((q_word, different_chars,u_word))
-                elif different_tashkeel:
-                    different_wordsintashkeel.append((q_word, different_tashkeel,u_word))
+                    different_wordsinONeCharacter.append((q_word, different_chars,u_word))               
                       
                 flag = True
                 user_words_copy.remove(u_word)  
@@ -146,6 +139,12 @@ def compare_texts(quran_text, user_text):
         'different_wordsinONeCharacter': different_wordsinONeCharacter_result,
         'extraWord': extraWords
     }
+
+
+
+
+
+
 async def query(filename):
     async with aiohttp.ClientSession() as session:
         data = filename.read()
