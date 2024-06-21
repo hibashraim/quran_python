@@ -139,7 +139,7 @@ def compare_texts(quran_text, user_text):
                 break
            
         if not flag:
-            different_words.append(q_word,index)
+            different_words.append((q_word,index))
  
     for word_pair in different_words:
         different_words_result.append({
@@ -156,7 +156,6 @@ def compare_texts(quran_text, user_text):
             'different_charintashkeel': word_pair[1],
             'user_word':word_pair[2],
              'quran_index':word_pair[3]
-
         })
 
 
