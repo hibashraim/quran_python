@@ -89,8 +89,6 @@ def compare_texts(quran_text, user_text):
     extraWords= []
 
 
-
-
     quran_words = quran_text.split()
     user_words = user_text.split()
    
@@ -102,7 +100,9 @@ def compare_texts(quran_text, user_text):
     flag=False
     user_words_copy = user_words.copy()
     print(user_words_copy)
+    index=-1
     for q_word in quran_words:
+        index+=1
         flag = False
         for u_word in user_words_copy:
              
@@ -118,7 +118,7 @@ def compare_texts(quran_text, user_text):
                     break
                  else:
                     different_tashkeel = find_different_tashkeel(q_word, u_word)
-                 different_wordsintashkeel.append((q_word, different_tashkeel,u_word))
+                 different_wordsintashkeel.append((q_word, different_tashkeel,u_word,index))
                  print(q_word,different_tashkeel,u_word)
                  flag = True
                  user_words_copy.remove(u_word)  
@@ -131,7 +131,7 @@ def compare_texts(quran_text, user_text):
                 print('ok')
                 
                 if different_charsAll or different_chars:
-                    different_wordsinONeCharacter.append((q_word, different_chars,u_word))
+                    different_wordsinONeCharacter.append((q_word, different_chars,u_word,index))
                    
                      
                 flag = True
@@ -139,11 +139,12 @@ def compare_texts(quran_text, user_text):
                 break
            
         if not flag:
-            different_words.append(q_word)
+            different_words.append(q_word,index)
  
     for word_pair in different_words:
         different_words_result.append({
-            'quran_word': word_pair
+            'quran_word': word_pair[0],
+            'quran_index':word_pair[1]
         })
 
 
@@ -153,8 +154,8 @@ def compare_texts(quran_text, user_text):
         different_wordsintashkeel_result.append({
             'quran_word': word_pair[0],
             'different_charintashkeel': word_pair[1],
-            'user_word':word_pair[2]
-
+            'user_word':word_pair[2],
+             'quran_index':word_pair[3]
 
         })
 
@@ -165,7 +166,8 @@ def compare_texts(quran_text, user_text):
         different_wordsinONeCharacter_result.append({
             'quran_word': word_pair[0],
             'different_chars': word_pair[1],
-            'user_word':word_pair[2]
+            'user_word':word_pair[2],
+             'quran_index':word_pair[3]
 
 
         })
